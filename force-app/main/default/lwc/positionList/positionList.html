@@ -1,0 +1,49 @@
+<template>
+    <lightning-card>
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:job_position" alternative-text="Job Position" size="large" title="large size">
+                    </lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a class="slds-card__header-link slds-truncate" title="Accounts">
+                            <span>Positions</span>
+                        </a>
+                        <lightning-layout-item size="9" flexibility="auto" padding="horizontal-small"
+                            class="slds-text-align_right">
+                            <lightning-button onclick={createPosition} aria-haspopup="dialog" label="New">
+                            </lightning-button>
+                        </lightning-layout-item>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Lightning Combo Box to Filter by Status -->
+            <div>
+                <lightning-combobox label="Filter By Status" value={selectedStatus} options={comboOptions} onchange={handleChange}></lightning-combobox>
+            </div>
+            <div>
+                <p>Total Records: {totalRecords}</p>
+            </div>
+            <!-- Beginning of the Positions to Display List -->
+            <template lwc:if={positionsToDisplay}>
+                <template for:each={records} for:item="position" for:index="idx">
+                    <div key={position.Id}>
+                        <c-position-card idx={idx} position-name={position.Name} due-date={position.Due_Date__c} position-status={position.Status__c} position-salary={position.Salary__c} position-id={position.Id} onselected={handleSelection}></c-position-card>     
+                    </div>
+                </template>
+
+            </template>
+            <!-- If there are no Positions to display -->
+            <template lwc:else>
+                <p>No records to display...</p>
+            </template>
+        </div>
+
+    </lightning-card>
+
+</template>

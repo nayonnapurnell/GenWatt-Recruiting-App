@@ -1,0 +1,104 @@
+Nayonna Purnell – BAH_Exercise_Nineteen
+
+****** acctRelated html ******
+
+<template>
+    <lightning-card title={detailLabel} icon-name="standard:account">
+        <lightning-accordion allow-multiple-sections-open onsectiontoggle={handleSectionToggle} active-section-name={activeSections}>
+            <lightning-accordion-section name="Opportunities" label="Opportunities">
+                <c-opp-list record-id={oppId}></c-opp-list>            
+            </lightning-accordion-section>
+            <lightning-accordion-section name="Cases" label="Cases">
+                <c-case-list record-id={accountId}></c-case-list>
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </lightning-card>
+</template>
+
+
+****** acctRelated js ******
+
+import { LightningElement, api,wire } from 'lwc';
+import AccountMC from '@salesforce/messageChannel/AccountMessageChannel__c';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+
+export default class AcctRelated extends LightningElement {
+
+    accountId;          // property to hold the Account ID received from the message channel
+    accountName;        // property to hold the Account Name received from the message channel
+    subscription = [];  // property to hold the subscription object returned from subscribe
+
+     // getter method to display a label in the Detail component
+     get detailLabel(){
+        return 'Related Records for ' + this.accountName;
+    }
+        // create the MessageContext object
+        @wire(MessageContext)
+        msgContext;
+    
+        // create a method to subscribe to the message channel
+        subscribeToMessageChannel(){
+            // use the subscribe method to subscribe to the AccountMessageChannel and store the returned subscription object into my property
+            this.subscription = subscribe(this.msgContext, AccountMC, (message)=> this.handleMessage(message));
+    
+        } // End of the subscribeToMessageChannel method
+    
+        // create a method to unsubscribe from the message channel
+        unsubscribeFromMessageChannel(){
+            unsubscribe(this.subscription);
+    
+        } // End of the unsubscribeToMessageChannel method
+    
+        // method to handle the message channel message when received
+        handleMessage(message){
+            console.log('Handle Message Method' + message);
+            this.accountId = message.recordId;
+            this.accountName = message.accountName;
+        }  // End of the handleMessage method
+    
+        connectedCallback(){
+            this.subscribeToMessageChannel();
+        } // end of the connectedCallback
+    
+        disconnectedCallback(){
+            this.unsubscribeFromMessageChannel();
+        } // end of the disconnectedCallback
+    
+        detailSaved(event){
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Account Updated',
+                message: 'Account ' + event.detail.fields.Name.value + ' was successfully updated!',
+                variant: 'success',
+                mode: 'dismissible'
+            }));
+            
+        } 
+
+      // accordian event handling
+      handleSectionToggle(event) {
+        const openSections = event.detail.openSections;
+
+        if (openSections.length === 0) {
+            this.activeSectionsMessage = 'All sections are closed';
+        } else {
+            this.activeSectionsMessage =
+                'Open sections: ' + openSections.join(', ');
+        }
+    }
+}
+
+
+****** acctRelated js-meta.xml ******
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Account Detail Component</masterLabel>
+    <description>This component serves to for the Account Message channel for the Account Detail Component</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+</LightningComponentBundle>

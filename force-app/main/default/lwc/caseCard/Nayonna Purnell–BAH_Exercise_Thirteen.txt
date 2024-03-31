@@ -1,0 +1,131 @@
+Nayonna Purnell–BAH_Exercise_Thirteen.txt
+
+
+******* caseList html  *******
+<template>
+    <template lwc:if={casesToDisplay}>
+        <template for:each={records} for:item="rec">
+            <div key={rec.fields.Id.value}>
+                <c-case-card case-id={rec.fields.Id.value} case-subject={rec.fields.Subject.value} case-status={rec.fields.Status.value} case-priority={rec.fields.Priority.value} case-number={rec.fields.CaseNumber.value}></c-case-card>
+            </div>
+        </template>
+    </template>
+    <template lwc:else>
+        <p>No records to display...</p>
+    </template>
+</template>
+
+
+******* caseList js *******
+import { LightningElement, api, wire} from 'lwc';
+import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
+
+export default class CaseList extends LightningElement {
+// public property to inherit the account ID 
+@api recordId;
+
+records; //property to hold the related records returned from the wire service
+results; //property to hold the object that is provisioned from the wire service
+casesToDisplay = false; //property to determine if we have opp records returned
+
+// use the wire service to invoke the wire adapter function
+@wire(getRelatedListRecords, { parentRecordId: '$recordId', relatedListId: 'Cases',
+fields: ['Case.Id', 'Case.Subject', 'Case.Status', 
+'Case.Priority', 'Case.CaseNumber']})
+
+relatedCases(caseRecords){
+    console.log(caseRecords);
+    this.results = caseRecords;
+    
+    if(this.results.data){
+        this.records = this.results.data.records;
+        this.casesToDisplay = this.records.length > 0 ? true:false;
+    }
+    
+    if(this.results.error){
+        console.error('Error retrieving opportunities...');
+        this.casesToDisplay = false;
+    }
+    };
+
+
+renderedCallback(){
+    console.log(this.records);
+}
+
+
+}
+
+******* caseList js-meta.xml *******
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Case  List Component</masterLabel>
+    <description>This component demonstrates using the getRelatedListRecords wire adaptor function.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>
+
+
+******* caseCard html ******* 
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <article class="slds-tile">
+                <h3 class="slds-tile__title slds-truncate" title="Case Card Component" onclick={caseSelected}>
+                  <a>{caseSubject}</a>
+                </h3>
+                <div class="slds-tile__detail">
+                  <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak" title="Status Label">Status: </dt>
+                    <dd class="slds-item_detail" title="Status value">{caseStatus}</dd>
+                    <dt class="slds-item_label slds-text-color_weak" title="Priority Label">Priority: </dt>
+                    <dd class="slds-item_detail" title="Priority value">{casePriority}</dd>
+                    <dt class="slds-item_label slds-text-color_weak" title="Case Number Label">Case Number: </dt>
+                    <dd class="slds-item_detail" title="Case Number value">{caseNumber}</dd>
+                  </dl>
+                </div>
+              </article>
+            </div>
+    </lightning-card>
+</template>
+
+
+******* caseCard js ******* 
+
+import { LightningElement, api } from 'lwc';
+
+export default class CaseCard extends LightningElement {
+    
+    @api caseId;
+    @api caseNumber;
+    @api caseSubject;
+    @api caseStatus;
+    @api casePriority;
+
+
+//method that stores the custom event 
+caseSelected(){
+// create a custom event
+const caseSelected = new CustomEvent('casecustomevent', {detail: {caseId: this.caseId, caseSubject: this.caseSubject}});
+
+ // dispatch my custom event
+ this.dispatchEvent(caseSelected);
+
+}
+}
+
+******* caseCard js-meta.xml ******* 
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Case Card Component</masterLabel>
+    <description>This component demonstrates using the getRelatedListRecords wire adaptor function.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>

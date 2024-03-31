@@ -1,0 +1,17 @@
+<template>
+    <lightning-card>
+        <lightning-combobox label="Filter By Status" value={selectedStatus} options={comboOptions} onchange={handleChange}></lightning-combobox>
+        <template lwc:if={applicationsToDisplay}>
+            <template for:each={records} for:item="rec" for:index="idx">
+                <div key={rec.fields.Id.value}>
+                    <c-application-card idx={idx} application-id={rec.fields.Id.value} application-name={rec.fields.Name.value} application-status={rec.fields.Status__c.value} application-position={rec.fields.Position__c.value} number-of-reviews={rec.fields.Num_of_Reviews__c.value} application-candidate={rec.fields.Candidate__r.displayValue} review-score={rec.fields.Review_Score__c.value} candidate-id={rec.fields.Candidate__c.value}></c-application-card>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p>No records to display...</p>
+        </template>
+
+    </lightning-card>
+    
+</template>

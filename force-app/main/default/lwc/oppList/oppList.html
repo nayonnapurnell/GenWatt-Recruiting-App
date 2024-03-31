@@ -1,0 +1,17 @@
+<template>
+    <lightning-combobox label="Stage Filter" value={status} options={comboOptions} onchange={handleChange}></lightning-combobox>
+    <div>
+        <p>Total Records: {totalRecords}</p>
+        <p>Total Amount: {totalAmount}</p>
+    </div>
+    <template lwc:if={oppsToDisplay}>
+        <template for:each={records} for:item="rec">
+            <div key={rec.fields.Id.value}>
+            <c-opp-card opp-id={rec.fields.Id.value} opp-name={rec.fields.Name.value} opp-amount={rec.fields.Amount.value} stage-name={rec.fields.StageName.value} close-date={rec.fields.CloseDate.value}></c-opp-card>
+            </div>
+        </template>
+    </template>
+    <template lwc:else>
+        <p>No records to display...</p>
+    </template>
+</template>

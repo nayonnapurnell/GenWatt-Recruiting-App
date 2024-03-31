@@ -1,0 +1,126 @@
+Nayonna Purnell – BAH_Exercise_Fifteen.txt
+
+
+Contact Controller ************
+
+public with sharing class ContactController {
+
+    @AuraEnabled(cacheable=true)
+    public static List<Contact> getContacts(Id accountId) {
+        List<Contact> conList = [SELECT Id,FirstName, LastName, Title, Email from Contact where AccountId=:accountId WITH SECURITY_ENFORCED];
+        return conList;
+    } 
+} 
+
+
+acctCard html ************
+
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <article class="slds-tile">
+                <h3 class="slds-tile__title" title="Account Card Component" onclick={acctSelected}>
+                    <a>{ranking}. {acctName}</a>
+                  </h3>
+                  <div class="slds-tile__detail">
+                    <dl class="slds-list_horizontal slds-wrap">
+                        <dt class="slds-item_label  slds-text-color_weak" title="Annual Revenue Label">Annual Revenue: </dt>
+                        <dd class="slds-item_detail" title="Annual Revenue value">
+                            <lightning-formatted-number value={annualRevenue} format-style="currency"></lightning-formatted-number>
+                        </dd>
+                        <dt class="slds-item_label slds-text-color_weak" title="Phone Label">Phone: </dt>
+                        <dd class="slds-item_detail" title="Phone value">{phone}</dd>
+                    </dl>
+                  </div>
+                  <div>
+                    <lightning-input type="checkbox" label="Show Contacts?" onchange={handleChange} onsuccess={refreshRecords}></lightning-input>
+                    <template lwc:if={showContacts}>
+                        <template for:each={contacts} for:item="cont" for:index="idx"> 
+                            <div key={cont.Id}>  
+                        <ul class="slds-list_horizontal slds-has-dividers_right">
+                            <li class="slds-item"><p> <lightning-icon icon-name="standard:contact" alternative-text="Contact" size="xx-small"
+                                title="xx-small size"></lightning-icon> {cont.FirstName} {cont.LastName}. {cont.Title} . <lightning-icon icon-name="standard:email" alternative-text="Email" title="Email" size="xx-small"></lightning-icon>{cont.Email}
+                            </p></li>
+                        </ul>  
+                        </div>
+                        
+                    </template>     
+                      </template>
+                  </div>
+            </article>
+        </div>
+    </lightning-card>
+    
+</template>
+
+acctCard.js
+
+import { LightningElement,api,wire } from 'lwc';
+import getContacts from '@salesforce/apex/ContactController.getContacts';
+import { refreshApex } from '@salesforce/apex';
+
+export default class AcctCard extends LightningElement {
+   // @api recordId;
+    @api acctId;
+    @api acctName;
+    @api annualRevenue;
+    @api phone;
+    @api idx;
+
+    //Contact Fields
+    @api FirstName;
+    @api LastName;
+
+    selectedId;
+    showContacts = false;
+    records;
+    contacts = [];
+    results;
+
+    get ranking(){
+        return this.idx + 1;
+    }
+
+   
+
+//method that stores the custom event
+acctSelected(){
+
+const acctSelected = new CustomEvent('acctcustomevent', {detail: {acctId: this.acctId, acctName: this.acctName, idx: this.idx}});
+
+console.log('Test');
+console.log('The current account Id and account name  is:' + this.acctId + ' ' + this.acctName + this.idx);
+
+// dispatch my custom event
+this.dispatchEvent(acctSelected);
+
+}// end of the acctSelected custom event
+
+
+handleChange(event) {
+    if(this.showContacts){
+        this.showContacts = false;
+    }else{
+        //invoke getContacts Apex method
+        getContacts( { accountId: this.acctId} )
+        .then((data) => {
+            console.log(data);
+            this.contacts = data;
+            this.showContacts = true;
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+        .finally(()=> {
+            console.log('Finally got contacts...');
+        });
+
+    }
+}   
+  
+
+  refreshRecords(){
+    refreshApex(this.results);
+}
+
+}

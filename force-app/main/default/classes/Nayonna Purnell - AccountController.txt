@@ -1,0 +1,13 @@
+*****Nayonna Purnell - AccountControllerExercise***********
+
+
+public  class AccountController {
+    
+    public static List<Account> getAccounts() {
+
+        List<Account> acctList = [select ID, Name, Phone, AccountRevenue FROM contact LIMIT 5];
+
+        return acctList;
+
+    }
+}

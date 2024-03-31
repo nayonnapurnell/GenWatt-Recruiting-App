@@ -1,0 +1,92 @@
+Nayonna Purnell – BAH_Exercise_Six
+
+************* HTML *************
+
+<template>
+    <lightning-card>
+        <div>
+            <!-- Show Opportunities -->
+        <lightning-button title="Show Opportunities" label="Show Opportunities" onclick={toggleSectionTwo}></lightning-button>
+        <template lwc:if={showTwo}>
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <p>Name: {opp.Name} | Amount: {opp.Amount}</p>
+                </div>
+            </template>
+        </template>
+        </div>
+
+    </lightning-card>
+    
+</template>
+
+************* JavaScript *************
+import { LightningElement, api } from 'lwc';
+import getAccounts from '@salesforce/apex/AccountController.getAccounts';
+import relatedOpps from '@salesforce/apex/OpportunityController.relatedOpps';
+
+export default class RelatedOppsComponent extends LightningElement {
+
+    @api recordId;
+    @api showTwo = false;
+    @api loadingOpportunities = false;
+
+    accounts = [];
+    opps = [];
+
+    //create a method to toggle showTwo
+    connectedCallback(){
+        getAccounts()
+        .then((data) => {
+            console.log(data);
+            this.accounts = data;
+            
+        })
+        .catch((err) => {
+            console.error(err);
+        })
+        .finally(()=> {
+            console.log('Finally got accounts...');
+        });
+
+    }
+
+    toggleSectionTwo(){
+        if(this.showTwo){
+            this.showTwo = false;
+        }else{
+            this.loadingOpportunities = true;
+
+            //invoke relatedOpps Apex method
+            relatedOpps( { accountId: this.accounts[0].Id} )
+            .then((data) => {
+                console.log(data);
+                this.opps = data;
+                this.showTwo = true;
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(()=> {
+                console.log('Finally got opportunities...');
+                this.loadingOpportunities = false;
+            });
+
+        }
+    }
+}
+
+************* meta.xml *************
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Related Opportunities Component</masterLabel>
+    <description>This component displays the related opportunities from an account.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>

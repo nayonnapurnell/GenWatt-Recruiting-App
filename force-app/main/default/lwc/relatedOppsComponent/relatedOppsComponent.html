@@ -1,0 +1,25 @@
+<template>
+    <lightning-card title="Related Opportunities Component">
+        <div>
+            <p>You have selected: {Id} {Name}  </p>
+        <template lwc:if={opps}>
+
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <c-opp-card opp-id={opp.Id} opp-name={opp.Name} stage-name={opp.StageName} opp-amount={opp.Amount} close-date ={opp.CloseDate} onoppcustomevent={handleOppEvent}></c-opp-card>  
+                </div>
+            </template>
+        </template>
+        </div>
+        <lightning-record-form 
+        record-id={Id}
+        object-api-name='Opportunity'
+        mode={mode}
+        layout-type={layoutType}
+        onsuccess={refreshRecords}
+        ></lightning-record-form>
+    </lightning-card>
+    
+</template>
+

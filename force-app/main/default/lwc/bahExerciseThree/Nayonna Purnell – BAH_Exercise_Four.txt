@@ -1,0 +1,141 @@
+***********Nayonna Purnell –BAH_Exercise_Four ****************
+
+***** HTML File *******
+<template>
+    <lightning-card title="BAH Exercise Three">
+        <!-- Show Accounts -->
+        <lightning-button title="Show Accounts" label="Show Accounts" onclick={toggleSectionOne}></lightning-button>
+        <!-- Loading Spinner for Accounts -->
+        <template lwc:if={loadingAccounts}>
+            <lightning-spinner></lightning-spinner>
+        </template>
+
+        <template lwc:if={showOne}>
+            <template for:each={accounts} for:item="acct" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={acct.Id}>
+                    <p>{idx}. Name: {acct.Name} | Annual Revenue: {acct.AnnualRevenue}</p>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p>No Accounts are Displaying....</p>
+        </template>
+
+        <!-- Show Opportunities -->
+        <lightning-button title="Show Opportunities" label="Show Opportunities" onclick={toggleSectionTwo}></lightning-button>
+        
+        <!-- Loading Spinner for Opportunities -->
+        <template lwc:if={loadingOpportunities}>
+            <lightning-spinner></lightning-spinner>
+        </template>
+
+        <template lwc:if={showTwo}>
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <p>{idx}. Name: {opp.Name} | Amount: {opp.Amount}</p>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p>No Opportunities are Displaying....</p>
+        </template>
+
+
+
+    </lightning-card>
+</template>
+
+***** Javascript File **************
+import { LightningElement } from 'lwc';
+import getAccounts from '@salesforce/apex/AccountController.getAccounts';
+import relatedOpps from '@salesforce/apex/OpportunityController.relatedOpps';
+
+
+export default class BahExerciseThree extends LightningElement {
+
+    //three private boolean properties
+    showOne = false;
+    showTwo = false;
+    loadingAccounts = false;
+    loadingOpportunities = false;
+
+    //create the private arrary property named accounts
+
+    accounts = [];
+    //     {Id: '111' , Name: 'Tabitha', AnnualRevenue: '2,000,000'},
+    //     {Id: '112' , Name: 'Marvin', AnnualRevenue: '1,000,000'},
+    //     {Id: '113' , Name: 'Chuck', AnnualRevenue: '5000,000'}
+    // ];
+
+    opps = [];
+    //     {Id: '111' , Name: 'Trina', Amount: '10,000,000'},
+    //     {Id: '222' , Name: 'Francois', Amount: '5,000,000'},
+    //     {Id: '333' , Name: 'Corren', Amount: '3,000,000'}
+    // ];
+
+    //create a method to toggle showOne
+    toggleSectionOne(){
+
+        if(this.showOne){
+            this.showOne = false;
+        }
+        else{
+            this.loadingAccounts = true;
+
+            //invoke my getAccounts Apex method
+            getAccounts()
+            .then((data) => {
+                console.log(data);
+                this.accounts = data;
+                this.showOne = true;
+                
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(()=> {
+                console.log('Finally got accounts...');
+                this.loadingAccounts = false;
+            });
+        }
+    }
+
+    //create a method to toggle showTwo
+    toggleSectionTwo(){
+        if(this.showTwo){
+            this.showTwo = false;
+        }else{
+            this.loadingOpportunities = true;
+
+            //invoke relatedOpps Apex method
+            relatedOpps()
+            .then((data) => {
+                console.log(data);
+                this.opps = data;
+                this.showTwo = true;
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(()=> {
+                console.log('Finally got opportunities...');
+                this.loadingOpportunities = false;
+            });
+    }
+}
+
+}//End of the bahExerciseThree.js file
+
+******* OpportunityController File ***********
+public with sharing class OpportunityController {
+    
+    @AuraEnabled
+    public static List<Opportunity> relatedOpps(String accountId) {
+        List<Opportunity> oppList = [SELECT Id, Name, AccountId, Amount, CloseDate, StageName FROM Opportunity WHERE AccountId =:accountId];
+
+        return oppList;
+
+    }
+}

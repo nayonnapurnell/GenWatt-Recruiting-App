@@ -1,0 +1,76 @@
+Nayonna Purnell – BAH_Exercise_Ten
+
+******************** relatedOppsComponent HTML ********************
+<template>
+    <lightning-card title="Related Opportunities Component">
+        <div>
+            <p>You have selected: {Id} {Name}  </p>
+        <template lwc:if={opps}>
+
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <c-opp-card opp-id={opp.Id} opp-name={opp.Name} stage-name={opp.StageName} amount={opp.Amount} close-date ={opp.CloseDate} onoppcustomevent={handleOppEvent}></c-opp-card>  
+  
+                </div>
+            </template>
+        </template>
+        </div>
+        <lightning-record-form 
+        record-id={Id}
+        object-api-name='Opportunity'
+        mode={mode}
+        layout-type={layoutType}
+        onsuccess={recordSaved}
+        ></lightning-record-form>
+    </lightning-card>
+    
+</template>
+
+
+
+******************** relatedOppsComponent JS********************
+
+import { LightningElement, api } from 'lwc';
+import relatedOpps from '@salesforce/apex/OpportunityController.relatedOpps';
+
+export default class RelatedOppsComponent extends LightningElement {
+
+    @api recordId;
+    @api objectApiName;
+    @api mode = 'readonly';
+    @api layoutType = 'Full';
+    Id;
+    Name;
+ 
+    opps = [];
+
+
+ connectedCallback() {
+
+            //invoke relatedOpps Apex method
+            relatedOpps( { accountId: this.recordId} )
+            .then((data) => {
+                console.log(data);
+                this.opps = data;
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(()=> {
+                console.log('Finally got opportunities...');
+            });
+    }
+
+    handleOppEvent(event){
+        this.Id = event.detail.oppId;
+        this.Name = event.detail.oppName;
+    }
+
+
+
+
+
+
+} // End of the relatedOppsComponent
+

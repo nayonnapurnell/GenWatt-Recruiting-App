@@ -1,0 +1,127 @@
+****** relatedOppsComponent HTML ******
+<template>
+    <lightning-card title="Related Opportunities Component">
+        <div>
+            <p>You have selected: {Id} {Name}  </p>
+        <template lwc:if={opps}>
+
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <c-opp-card opp-id={opp.Id} opp-name={opp.Name} stage-name={opp.StageName} amount={opp.Amount} close-date ={opp.CloseDate} onoppcustomevent={handleOppEvent}></c-opp-card>    
+                </div>
+            </template>
+        </template>
+        </div>
+
+    </lightning-card>
+    
+</template>
+
+
+
+****** relatedOppsComponent JS ******
+import { LightningElement, api } from 'lwc';
+import relatedOpps from '@salesforce/apex/OpportunityController.relatedOpps';
+
+export default class RelatedOppsComponent extends LightningElement {
+
+    @api recordId;
+    Id;
+    Name;
+ 
+    opps = [];
+
+
+ connectedCallback() {
+
+            //invoke relatedOpps Apex method
+            relatedOpps( { accountId: this.recordId} )
+            .then((data) => {
+                console.log(data);
+                this.opps = data;
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            .finally(()=> {
+                console.log('Finally got opportunities...');
+            });
+    }
+
+    handleOppEvent(event){
+        this.Id = event.detail.oppId;
+        this.Name = event.detail.oppName;
+    }
+
+
+
+
+} // End of the relatedOppsComponent
+
+
+
+
+****** oppCard HTML ******
+
+<template>
+    <lightning-card title="Opp Card Component">
+        <article class="slds-card">
+            <div class="slds-card__body slds-card__body_inner">
+                <ul class="slds-grid slds-wrap slds-grid_pull-padded">
+                    <li class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <article class="slds-tile slds-media slds-card__tile slds-hint-parent">
+                            <div class="slds-media__figure">
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <h3 class="slds-tile__title" title="Opportunity Name" onclick={oppSelected}>
+                                        <a>{oppName}</a>
+                                    </h3>
+                                </div>
+                                <div class="slds-tile__detail">
+                                    <dl class="slds-list_horizontal slds-wrap">
+                                        <dt class="slds-item_label slds-text-color_weak" title="Stage Name">Stage: </dt>
+                                        <dd class="slds-item_detail" title="Stage">{ stageName} </dd>
+                                        <dt class="slds-item_label slds-text-color_weak" title="Close Date">Amount: </dt>
+                                        <dd class="slds-item_detail" title="Amount Value">{amount}</dd>
+                                        <dt class="slds-item_label slds-text-color_weak" title="Close Date">Close Date: </dt>
+                                        <dd class="slds-item_detail" title="Close Date Value">{closeDate}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </article>
+                    </li>
+                </ul>
+            </div>     
+        </article>
+    </lightning-card>
+</template>
+
+
+
+
+****** oppCard JS ******
+
+import { LightningElement, api } from 'lwc';
+
+export default class OppCard extends LightningElement {
+
+@api oppName;
+@api oppId;
+@api stageName;
+@api amount; 
+@api closeDate;
+
+
+oppSelected(){
+     // create a custom event
+     const oppSelected = new CustomEvent('oppcustomevent', {detail: {oppId: this.oppId, oppName: this.oppName}});
+
+     // dispatch my custom event
+     this.dispatchEvent(oppSelected);
+}
+
+
+
+}// End of the OppCard JS file

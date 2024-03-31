@@ -1,0 +1,98 @@
+*************** formToggle HTML ***************
+
+<template>
+    <c-opp-record-form object-api-name={objectApiName} record-id={recordId} mode={mode} layout-type={layoutType} onsave={}></c-opp-record-form>
+    <lightning-button label={displayMode} title="Display Mode" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+</template>
+
+*************** formToggle JS ***************
+
+import { LightningElement, api } from 'lwc';
+
+export default class FormToggle extends LightningElement {
+
+    @api recordId;
+    @api objectApiName;
+    @api mode = 'readonly';
+    @api layoutType = 'Compact';
+    @api displayMode = 'edit';
+   
+
+
+    handleClick(){
+      this.mode = 'edit';
+    }
+
+}// End of the formToggle.js file
+
+
+*************** formToggle Meta.XML ***************
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>formToggle Component</masterLabel>
+    <description>This component demonstrates the use of the Form Toggle button as a parent component.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+</LightningComponentBundle>
+
+*************** oppRecordForm HTML ***************
+
+<template>
+    <lightning-record-form 
+    record-id={recordId}
+    object-api-name={objectApiName}
+    mode={mode}
+    layout-type={layoutType}
+    onsuccess={recordSaved}
+    ></lightning-record-form>
+</template>
+
+
+*************** oppRecordForm JS ***************
+
+import { LightningElement, api } from 'lwc';
+
+export default class OppRecordForm extends LightningElement {
+    @api recordId; // inherits the record Id from a record page
+    @api objectApiName;  // inherits the Object API Name froma record page
+    @api layoutType = 'Compact';
+    @api mode = 'readonly';
+
+    //recordFields = ['Name', 'StageName', 'Amount'];
+
+    recordSaved(){ 
+       this.mode = 'readonly';
+
+        // create a custom event
+        const myEvent = new CustomEvent('save', {detail: this.mode});
+
+        // dispatch my custom event
+        this.dispatchEvent(myEvent);
+    }
+}
+
+
+************** oppRecordForm meta.XML **************
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Opp Record Form Component</masterLabel>
+    <description>This component demonstrates the lightning-record-form and lds.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+    <targetConfig targets="lightning__AppPage, lightning__RecordPage">
+        <property name="layoutType" type="String" label="Select Layout Type" datasource="readonly, view, edit"></property>
+        <property name="mode" type="String" label="Select Display Mode" datasource="Compact, Full"></property>
+    </targetConfig>
+</targetConfigs>
+</LightningComponentBundle>

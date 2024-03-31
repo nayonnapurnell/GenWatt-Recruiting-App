@@ -1,0 +1,53 @@
+<template>
+    <lightning-card title="BAH Exercise Three">
+        
+        <div>
+        <!-- Show Accounts -->
+        <lightning-button title="Show Accounts" label="Show Accounts" onclick={toggleSectionOne}></lightning-button>
+        <!-- Loading Spinner for Accounts -->
+        <template lwc:if={loadingAccounts}>
+            <lightning-spinner></lightning-spinner>
+        </template>
+
+        <template lwc:if={showOne}>
+            <template for:each={accounts} for:item="acct" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={acct.Id}>
+                    <p>{idx}. Name: {acct.Name} | Annual Revenue: {acct.AnnualRevenue}</p>
+                </div>
+            </template>
+        </template>
+        <template lwc:else>
+            <p>No Accounts are Displaying....</p>
+        </template>
+    </div>
+
+    <section>
+        <!-- Show Opportunities -->
+        <lightning-button title="Show Opportunities" label="Show Opportunities" onclick={toggleSectionTwo}></lightning-button>
+        
+        <!-- Loading Spinner for Opportunities -->
+        <template lwc:if={loadingOpportunities}>
+            <lightning-spinner></lightning-spinner>
+        </template>
+
+        <template lwc:if={showTwo}>
+            <template for:each={opps} for:item="opp" for:index="idx">
+                <!-- //If you use for:each we must use the key attribute to specify what is going to be the index or key value. -->
+                <div key={opp.Id}>
+                    <p>{idx}. Name: {opp.Name} | Amount: {opp.Amount}</p>
+                </div>
+            </template>
+        </template>
+        <!-- <template lwc:else>
+            <p>No Opportunities are Displaying....</p>
+        </template> -->
+        <template lwc:if={displayOppMessage}>
+            <p>You have to display the Accounts before yiuo can see the opps.</p>
+        </template>
+    </section>
+
+
+    </lightning-card>
+   
+</template>

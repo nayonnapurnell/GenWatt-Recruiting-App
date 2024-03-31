@@ -1,0 +1,33 @@
+<template>
+
+    <lightning-card title="Parent Component">
+        <p>Is child speaking? {childSpeak}</p>
+        <c-child-component child-name="Huey" age=2 oncrying={handleFit}></c-child-component>
+
+
+    </lightning-card>
+
+    <!-- <lightning-card variant="narrow" icon-name="standard:opportunity">
+        <h1 slot="title">Welcome, {friend}</h1> 
+         <lightning-avatar src="https://www.lightningdesignsystem.com/assets/images/avatar2.jpg"></lightning-avatar>
+
+        <h1>Here is information about your account:</h1>
+
+        <div style="height: 300px;">
+            <lightning-datatable
+                    key-field="id"
+                    data={data}
+                    columns={columns}>
+            </lightning-datatable>
+        </div>
+        <div slot="actions">
+            <lightning-button-icon
+                icon-name="utility:down"
+            ></lightning-button-icon>
+        </div>
+        
+        <div slot="footer">
+            <c-child-component></c-child-component>
+        </div>
+    </lightning-card> -->
+</template>

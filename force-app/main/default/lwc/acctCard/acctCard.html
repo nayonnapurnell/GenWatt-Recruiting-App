@@ -1,0 +1,36 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <article class="slds-tile">
+                <h3 class="slds-tile__title" title="Account Card Component" onclick={acctSelected}>
+                    <a>{ranking}. {acctName}</a>
+                  </h3>
+                  <div class="slds-tile__detail">
+                    <dl class="slds-list_horizontal slds-wrap">
+                        <dt class="slds-item_label  slds-text-color_weak" title="Annual Revenue Label">Annual Revenue: </dt>
+                        <dd class="slds-item_detail" title="Annual Revenue value">
+                            <lightning-formatted-number value={annualRevenue} format-style="currency"></lightning-formatted-number>
+                        </dd>
+                        <dt class="slds-item_label slds-text-color_weak" title="Phone Label">Phone: </dt>
+                        <dd class="slds-item_detail" title="Phone value">{phone}</dd>
+                    </dl>
+                  </div>
+                  <div>
+                    <lightning-input type="checkbox" label="Show Contacts?" onchange={handleChange} onsuccess={refreshRecords}></lightning-input>
+                    <template lwc:if={showContacts}>
+                        <template for:each={contacts} for:item="cont" for:index="idx"> 
+                            <div key={cont.Id}>  
+                        <ul class="slds-list_horizontal slds-has-dividers_right">
+                            <li class="slds-item"><p> <lightning-icon icon-name="standard:contact" alternative-text="Contact" size="xx-small"
+                                title="xx-small size"></lightning-icon> {cont.FirstName} {cont.LastName}. {cont.Title} . <lightning-icon icon-name="standard:email" alternative-text="Email" title="Email" size="xx-small"></lightning-icon>{cont.Email}
+                            </p></li>
+                        </ul>  
+                        </div>                       
+                    </template>     
+                      </template>
+                  </div>
+            </article>
+        </div>
+    </lightning-card>
+    
+</template>

@@ -1,0 +1,40 @@
+<template>
+    <!-- Create the template to be in edit mode -->
+    <template lwc:if={editMode}>
+        <lightning-record-edit-form record-id={recordId} object-api-name={objectApiName} onsuccess={toggleMode}>
+            <div class="slds-grid">
+                <div class="slds-col">
+                    <lightning-input-field field-name={nameField}></lightning-input-field>
+                    <lightning-input-field field-name={industryField}></lightning-input-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name={annualRevenueField}></lightning-input-field>
+                    <lightning-input-field field-name={phoneField}></lightning-input-field>
+                </div>
+            </div>
+            <div class="slds-var-m-top_medium">
+                <lightning-button label="Cancel" title="Cancel" onclick={toggleMode}></lightning-button>
+                <lightning-button label="Save" type="submit"></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </template>
+    <!-- Create the template in view mode -->
+    <template lwc:else>
+        <lightning-record-view-form object-api-name={objectApiName} record-id={recordId}>
+            <div class="slds-grid">
+                <div class="slds-col">
+                    <lightning-output-field field-name={nameField}></lightning-output-field>
+                    <lightning-output-field field-name={industryField}></lightning-output-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-output-field field-name={annualRevenueField}></lightning-output-field>
+                    <lightning-output-field field-name={phoneField}></lightning-output-field>
+                </div>
+            </div>
+            <div class="slds-var-m-top_medium">
+                <lightning-button label="Edit" title="Edit" onclick={toggleMode}></lightning-button>
+            </div>
+        </lightning-record-view-form>
+
+    </template>
+</template>

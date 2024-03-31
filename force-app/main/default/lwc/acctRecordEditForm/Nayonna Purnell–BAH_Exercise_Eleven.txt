@@ -1,0 +1,88 @@
+Nayonna Purnell–BAH_Exercise_Eleven
+
+*************acctRecordEditForm html*************
+<template>
+    <!-- Create the template to be in edit mode -->
+    <template lwc:if={editMode}>
+        <lightning-record-edit-form record-id={recordId} object-api-name={objectApiName} onsuccess={toggleMode}>
+            <div class="slds-grid">
+                <div class="slds-col">
+                    <lightning-input-field field-name={nameField}></lightning-input-field>
+                    <lightning-input-field field-name={industryField}></lightning-input-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-input-field field-name={annualRevenueField}></lightning-input-field>
+                    <lightning-input-field field-name={phoneField}></lightning-input-field>
+                </div>
+            </div>
+            <div class="slds-var-m-top_medium">
+                <lightning-button label="Cancel" title="Cancel" onclick={toggleMode}></lightning-button>
+                <lightning-button label="Save" type="submit"></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </template>
+    <!-- Create the template in view mode -->
+    <template lwc:else>
+        <lightning-record-view-form object-api-name={objectApiName} record-id={recordId}>
+            <div class="slds-grid">
+                <div class="slds-col">
+                    <lightning-output-field field-name={nameField}></lightning-output-field>
+                    <lightning-output-field field-name={industryField}></lightning-output-field>
+                </div>
+                <div class="slds-col">
+                    <lightning-output-field field-name={annualRevenueField}></lightning-output-field>
+                    <lightning-output-field field-name={phoneField}></lightning-output-field>
+                </div>
+            </div>
+            <div class="slds-var-m-top_medium">
+                <lightning-button label="Edit" title="Edit" onclick={toggleMode}></lightning-button>
+            </div>
+        </lightning-record-view-form>
+
+    </template>
+</template>
+
+
+*************acctRecordEditForm js************* 
+import { LightningElement, api } from 'lwc';
+import NAME_FIELD from '@salesforce/schema/Account.Name';
+import INDUSTRY_FIELD from '@salesforce/schema/Account.Industry';
+import ANNUAL_REVENUE_FIELD from '@salesforce/schema/Account.AnnualRevenue';
+import PHONE_FIELD from '@salesforce/schema/Account.Phone';
+
+
+
+export default class AcctRecordEditForm extends LightningElement {
+
+    // Flexipage provides recordId and objectApiName
+    @api recordId;
+    @api objectApiName;
+
+    editMode = false;
+
+    // create properties to hold the schema information from the imported fields so we can bind them to our markup
+    nameField = NAME_FIELD;
+    industryField = INDUSTRY_FIELD;
+    annualRevenueField = ANNUAL_REVENUE_FIELD;
+    phoneField = PHONE_FIELD;
+
+
+    // create a method to toggle between modes
+    toggleMode() {
+        this.editMode = !this.editMode;
+    }
+
+}
+
+
+*************acctRecordEditForm js-meta.xml************* 
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Account Record Edit Form Component</masterLabel>
+    <description>This component demonstrates the use of the light-record-edit-and-view-form base components.</description>
+    <targets>
+        <target>lightning__RecordPage</target>  
+    </targets>
+</LightningComponentBundle>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Prop Exercise Component</masterLabel>
+    <description>This component demos an understanding of the public properties lesson.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage, lightning__RecordPage">
+            <property name="sampleText" type="String" default="You may manually change this value" label="Sample Text" 
+            description= "Sets the sample text in the lwc"></property>
+
+            <property name="showDetails" type="Boolean" default="false" label="Show Details" 
+            description= "Sets the sample text in the lwc"></property>
+
+            <property name="cardTitle" type="String" default="PropExercise" label="Lorem Ipsum" 
+            description= "Sets the sample text in the lwc"></property>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

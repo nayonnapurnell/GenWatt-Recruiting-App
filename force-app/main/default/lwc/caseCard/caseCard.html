@@ -1,0 +1,22 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-gutters">
+            <article class="slds-tile">
+                <h3 class="slds-tile__title slds-truncate" title="Case Card Component" onclick={caseSelected}>
+                  <a>{caseSubject}</a>
+                  <lightning-icon class="slds-float_right" title="Edit" icon-name="utility:edit" size="x-small" onclick={editCase}></lightning-icon>
+                </h3>
+                <div class="slds-tile__detail">
+                  <dl class="slds-list_horizontal slds-wrap">
+                    <dt class="slds-item_label slds-text-color_weak" title="Status Label">Status: </dt>
+                    <dd class="slds-item_detail" title="Status value">{caseStatus}</dd>
+                    <dt class="slds-item_label slds-text-color_weak" title="Priority Label">Priority: </dt>
+                    <dd class="slds-item_detail" title="Priority value">{casePriority}</dd>
+                    <dt class="slds-item_label slds-text-color_weak" title="Case Number Label">Case Number: </dt>
+                    <dd class="slds-item_detail" title="Case Number value">{caseNumber}</dd>
+                  </dl>
+                </div>
+              </article>
+            </div>
+    </lightning-card>
+</template>

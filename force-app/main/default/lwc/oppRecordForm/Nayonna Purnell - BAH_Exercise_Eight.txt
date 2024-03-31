@@ -1,0 +1,49 @@
+******* oppRecordForm HTML *******
+<template>
+    <lightning-record-form 
+    record-id={recordId}
+    object-api-name={objectApiName}
+    mode={mode}
+    layout-type={layoutType}
+    onsuccess={recordSaved}
+    ></lightning-record-form>
+</template>
+
+******* oppRecordForm JS *******
+
+import { LightningElement, api } from 'lwc';
+
+export default class OppRecordForm extends LightningElement {
+    @api recordId; // inherits the record Id from a record page
+    @api objectApiName;  // inherits the Object API Name froma record page
+    @api layoutType = 'Compact';
+    @api mode = 'readonly';
+
+    //recordFields = ['Name', 'StageName', 'Amount'];
+
+    recordSaved(event){
+        console.log(event);
+    }
+}
+
+******* oppRecordForm Meta.XML *******
+
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Opp Record Form Component</masterLabel>
+    <description>This component demonstrates the lightning-record-form and lds.</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+    <targetConfig targets="lightning__AppPage, lightning__RecordPage">
+        <property name="layoutType" type="String" default="You may change the layout type here" label="Compact" 
+        description= "Sets the layout type in the lwc"></property>
+        <property name="mode" type="String" default="You may change the mode here" label="MOde" 
+        description= "Sets the Mode in the lwc"></property>
+    </targetConfig>
+</targetConfigs>
+</LightningComponentBundle>

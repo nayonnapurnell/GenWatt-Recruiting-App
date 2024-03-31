@@ -1,0 +1,13 @@
+<template>
+    <lightning-combobox label="Status" value={selectedStatus} options={comboOptions} onchange={handleChange}></lightning-combobox>
+    <template lwc:if={casesToDisplay}>
+        <template for:each={records} for:item="rec">
+            <div key={rec.fields.Id.value}>
+                <c-case-card case-id={rec.fields.Id.value} case-subject={rec.fields.Subject.value} case-status={rec.fields.Status.value} case-priority={rec.fields.Priority.value} case-number={rec.fields.CaseNumber.value}></c-case-card>
+            </div>
+        </template>
+    </template>
+    <template lwc:else>
+        <p>No records to display...</p>
+    </template>
+</template>

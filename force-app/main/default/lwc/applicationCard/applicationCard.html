@@ -1,0 +1,49 @@
+<template>
+    <lightning-card>
+        <h3 class="slds-tile__title" title="Application Card Component" onclick={applicationSelected}>
+            <a>{ranking}. {applicationName}</a>
+            <lightning-icon class="slds-p-left_large" title="Edit" icon-name="utility:edit" size="x-small" onclick={editApplication}></lightning-icon>                                   
+        </h3>
+          <div class="slds-tile__detail">
+            <dl class="slds-list_horizontal slds-wrap">
+                <dt class="slds-item_label slds-text-color_weak" title="Candidate Name">Candidate Name: </dt>
+                <dd class="slds-item_detail" title="Candidate Name value"><a onclick={viewCandidateRecord}>{applicationCandidate}</a>
+                <!-- <lightning-icon class="slds-p-left_large" title="Edit" icon-name="action:preview" size="xx-small" onclick={editCandidate}></lightning-icon>        -->
+                <span class="slds-p-left_large">
+                    <lightning-icon title="Edit" icon-name="action:preview" size="xx-small" onclick={editCandidate}></lightning-icon>      
+                </span>
+                                             
+                            
+                </dd>
+                <dt class="slds-item_label slds-text-color_weak" title="Application Status Label">Application Status: </dt>
+                <dd class="slds-item_detail" title="Application Status value">{applicationStatus}</dd>
+                <dt class="slds-item_label slds-text-color_weak" title="Number of Reviews Label">Number of Reviews: </dt>
+                <dd class="slds-item_detail" title="Number of Reviews value">{numberOfReviews}</dd>
+                <dt class="slds-item_label slds-text-color_weak" title="Review Score Label">Review Score: </dt>
+                <dd class="slds-item_detail" title="Review Score value">{reviewScore}</dd>
+            </dl>           
+          </div>
+          <div>
+            <lightning-card>
+            <lightning-input type="checkbox" label="Select box for Reviews" onchange={handleChange} onsuccess={refreshRecords}> </lightning-input>
+            <template lwc:if={showReviews}>
+                <template for:each={reviews} for:item="rec" for:index="idx"> 
+                    <div key={rec.Id}>  
+                        <ul class="slds-list_horizontal slds-has-dividers_right">
+                            <li class="slds-item">
+                                <ul>
+                                    <li>Name: {rec.Name}</li>
+                                    <li>Technical Skills: {rec.Technical_Skills__c}</li>
+                                    <li>Cultural Fit: {rec.Cultural_Fit__c}</li>
+                                    <li>Business Skills: {rec.Business_Skills__c}</li>
+                                    <li>Recommended for Hire: {rec.Recommend_for_Hire__c}</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+        </lightning-card>
+        </div>
+    </lightning-card>
+</template>
